@@ -10,6 +10,7 @@ class Artist {
         this.fanBase = fanBase;
         this.money = money;
     }
+
     public void releaseSongs(Song[] songs) {
         for (Song song : songs) {
             int popularity = song.calculatePopularity();
@@ -24,18 +25,6 @@ class Artist {
         fanBase += concertFans;
         money += 1000;
         System.out.println(name + " performed at a concert and gained " + concertFans + " fans!");
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setFanBase(int fanBase) {
-        this.fanBase = fanBase;
-    }
-
-    public void setMoney(double money) {
-        this.money = money;
     }
 
     public String getName() {
@@ -66,16 +55,8 @@ class Song {
         return quality * 10;
     }
 
-    public void displayDetails() {
-        System.out.println("Title: " + title + ", Style: " + style + ", Quality: " + quality);
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public String getStyle() {
-        return style;
     }
 }
 
@@ -98,7 +79,6 @@ class Main {
         int numberOfSongs = scanner.nextInt();
         scanner.nextLine(); 
 
-       
         Song[] songs = new Song[numberOfSongs];
 
         for (int i = 0; i < numberOfSongs; i++) {
