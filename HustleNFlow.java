@@ -9,7 +9,14 @@ class Artist {
     private static double totalMoneyEarned = 0;
     private static int totalFans = 0;
 
-    // Constructor: public access
+    // Default Constructor
+    public Artist() {
+        this.name = "Unknown Artist";
+        this.fanBase = 0;
+        this.money = 0.0;
+        totalArtists++;
+    }
+
     public Artist(String name, int fanBase, double money) {
         this.name = name;
         this.fanBase = fanBase;
@@ -19,7 +26,7 @@ class Artist {
         totalFans += fanBase;
     }
 
-    // I am setting Public getter and setter methods to  use abstraction
+    // Public getter and setter methods to use abstraction
     public String getName() {
         return name;
     }
@@ -74,7 +81,13 @@ class Song {
     private String style;
     private int quality;
 
-    // Constructor
+    // Default Constructor
+    public Song() {
+        this.title = "Unknown Title";
+        this.style = "Unknown Style";
+        this.quality = 1; 
+    }
+
     public Song(String title, String style, int quality) {
         this.title = title;
         this.style = style;
