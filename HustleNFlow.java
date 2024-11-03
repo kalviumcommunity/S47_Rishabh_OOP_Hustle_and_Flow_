@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 class Artist {
-    private String name;
+    private String name;            // Private fields: abstract implementation
     private int fanBase;
     private double money;
 
@@ -9,6 +9,7 @@ class Artist {
     private static double totalMoneyEarned = 0;
     private static int totalFans = 0;
 
+    // Constructor: public access
     public Artist(String name, int fanBase, double money) {
         this.name = name;
         this.fanBase = fanBase;
@@ -18,6 +19,7 @@ class Artist {
         totalFans += fanBase;
     }
 
+    // I am setting Public getter and setter methods to  use abstraction
     public String getName() {
         return name;
     }
@@ -65,31 +67,21 @@ class Artist {
         System.out.println("Total Money Earned by All Artists: $" + totalMoneyEarned);
         System.out.println("Total Fans Gained by All Artists: " + totalFans);
     }
-
-    public static int getTotalArtists() {
-        return totalArtists;
-    }
-
-    public static double getTotalMoneyEarned() {
-        return totalMoneyEarned;
-    }
-
-    public static int getTotalFans() {
-        return totalFans;
-    }
 }
 
 class Song {
-    private String title;
+    private String title;   // Private fields
     private String style;
     private int quality;
 
+    // Constructor
     public Song(String title, String style, int quality) {
         this.title = title;
         this.style = style;
         this.quality = quality;
     }
 
+    // Public getters and setters
     public String getTitle() {
         return title;
     }
