@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 class Artist {
-    private String name;            // Private fields: abstract implementation
+    private String name;
     private int fanBase;
     private double money;
 
@@ -9,7 +9,6 @@ class Artist {
     private static double totalMoneyEarned = 0;
     private static int totalFans = 0;
 
-    // Default Constructor
     public Artist() {
         this.name = "Unknown Artist";
         this.fanBase = 0;
@@ -26,7 +25,6 @@ class Artist {
         totalFans += fanBase;
     }
 
-    // Public getter and setter methods to use abstraction
     public String getName() {
         return name;
     }
@@ -76,16 +74,49 @@ class Artist {
     }
 }
 
+class Singer extends Artist {
+    private String genre;
+
+    public Singer(String name, int fanBase, double money, String genre) {
+        super(name, fanBase, money);
+        this.genre = genre;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+}
+
+class Songwriter extends Singer {
+    private int songsWritten;
+
+    public Songwriter(String name, int fanBase, double money, String genre, int songsWritten) {
+        super(name, fanBase, money, genre);
+        this.songsWritten = songsWritten;
+    }
+
+    public int getSongsWritten() {
+        return songsWritten;
+    }
+
+    public void setSongsWritten(int songsWritten) {
+        this.songsWritten = songsWritten;
+    }
+}
+
 class Song {
-    private String title;   // Private fields
+    private String title;
     private String style;
     private int quality;
 
-    // Default Constructor
     public Song() {
         this.title = "Unknown Title";
         this.style = "Unknown Style";
-        this.quality = 1; 
+        this.quality = 1;
     }
 
     public Song(String title, String style, int quality) {
@@ -94,7 +125,6 @@ class Song {
         this.quality = quality;
     }
 
-    // Public getters and setters
     public String getTitle() {
         return title;
     }
@@ -147,7 +177,10 @@ class Main {
             double initialMoney = scanner.nextDouble();
             scanner.nextLine();
 
-            artists[j] = new Artist(artistName, initialFanBase, initialMoney);
+            System.out.print("Enter genre: ");
+            String genre = scanner.nextLine();
+
+            artists[j] = new Singer(artistName, initialFanBase, initialMoney, genre);
 
             System.out.print("Enter the number of songs: ");
             int numberOfSongs = scanner.nextInt();
