@@ -9,6 +9,7 @@ class Artist {
     private static double totalMoneyEarned = 0;
     private static int totalFans = 0;
 
+    
     public Artist() {
         this.name = "Unknown Artist";
         this.fanBase = 0;
@@ -45,6 +46,7 @@ class Artist {
         this.money = money;
     }
 
+    
     public void releaseSongs(Song[] songs) {
         for (Song song : songs) {
             int popularity = song.calculatePopularity();
@@ -55,6 +57,16 @@ class Artist {
             totalFans += fansGained;
             System.out.println(name + " released '" + song.getTitle() + "' and gained " + fansGained + " fans!");
         }
+    }
+
+    public void releaseSongs(Song song) { 
+        int popularity = song.calculatePopularity();
+        int fansGained = popularity * 10;
+        setFanBase(getFanBase() + fansGained);
+        setMoney(getMoney() + popularity * 50);
+        totalMoneyEarned += popularity * 50;
+        totalFans += fansGained;
+        System.out.println(name + " released '" + song.getTitle() + "' and gained " + fansGained + " fans!");
     }
 
     public void performConcert() {
@@ -77,8 +89,14 @@ class Artist {
 class Singer extends Artist {
     private String genre;
 
+   
     public Singer(String name, int fanBase, double money, String genre) {
         super(name, fanBase, money);
+        this.genre = genre;
+    }
+
+    public Singer(String genre) {
+        super();
         this.genre = genre;
     }
 
@@ -88,23 +106,6 @@ class Singer extends Artist {
 
     public void setGenre(String genre) {
         this.genre = genre;
-    }
-}
-
-class Songwriter extends Singer {
-    private int songsWritten;
-
-    public Songwriter(String name, int fanBase, double money, String genre, int songsWritten) {
-        super(name, fanBase, money, genre);
-        this.songsWritten = songsWritten;
-    }
-
-    public int getSongsWritten() {
-        return songsWritten;
-    }
-
-    public void setSongsWritten(int songsWritten) {
-        this.songsWritten = songsWritten;
     }
 }
 
@@ -207,7 +208,12 @@ class Main {
             System.out.println("\nInitial Artist Details:");
             System.out.println("Name: " + artists[j].getName() + ", Fan Base: " + artists[j].getFanBase() + ", Money: $" + artists[j].getMoney());
 
-            artists[j].releaseSongs(songs);
+           
+            if (numberOfSongs > 1) {
+                artists[j].releaseSongs(songs);
+            } else {
+                artists[j].releaseSongs(songs[0]);
+            }
 
             artists[j].performConcert();
 
