@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+// Interface for different types of concerts
 interface ConcertType {
     int getFanGain();
     double getMoneyEarned();
@@ -85,29 +86,7 @@ class ViralSong extends Song {
 
     @Override
     public int calculatePopularity() {
-        return quality * 20;
-    }
-}
-
-class Statistics {
-    private static int totalArtists = 0;
-    private static double totalMoneyEarned = 0;
-    private static int totalFans = 0;
-
-    public static void updateArtistStats(int fans, double money) {
-        totalFans += fans;
-        totalMoneyEarned += money;
-    }
-
-    public static void incrementArtistCount() {
-        totalArtists++;
-    }
-
-    public static void displayTotalStats() {
-        System.out.println("\n--- Total Stats ---");
-        System.out.println("Total Artists: " + totalArtists);
-        System.out.println("Total Money Earned by All Artists: $" + totalMoneyEarned);
-        System.out.println("Total Fans Gained by All Artists: " + totalFans);
+        return quality * 20; // Higher popularity multiplier
     }
 }
 
@@ -180,6 +159,28 @@ class Singer extends Artist {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+}
+
+class Statistics {
+    private static int totalArtists = 0;
+    private static double totalMoneyEarned = 0;
+    private static int totalFans = 0;
+
+    public static void updateArtistStats(int fans, double money) {
+        totalFans += fans;
+        totalMoneyEarned += money;
+    }
+
+    public static void incrementArtistCount() {
+        totalArtists++;
+    }
+
+    public static void displayTotalStats() {
+        System.out.println("\n--- Total Stats ---");
+        System.out.println("Total Artists: " + totalArtists);
+        System.out.println("Total Money Earned by All Artists: $" + totalMoneyEarned);
+        System.out.println("Total Fans Gained by All Artists: " + totalFans);
     }
 }
 
