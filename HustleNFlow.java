@@ -1,5 +1,93 @@
 import java.util.Scanner;
 
+interface ConcertType {
+    int getFanGain();
+    double getMoneyEarned();
+}
+
+class StandardConcert implements ConcertType {
+    private int fanGain;
+    private double moneyEarned;
+
+    public StandardConcert(int fanGain, double moneyEarned) {
+        this.fanGain = fanGain;
+        this.moneyEarned = moneyEarned;
+    }
+
+    @Override
+    public int getFanGain() {
+        return fanGain;
+    }
+
+    @Override
+    public double getMoneyEarned() {
+        return moneyEarned;
+    }
+}
+
+class CharityConcert implements ConcertType {
+    private int fanGain;
+    private double moneyEarned;
+
+    public CharityConcert(int fanGain, double moneyEarned) {
+        this.fanGain = fanGain;
+        this.moneyEarned = moneyEarned * 0.5; // Adjusted earnings for charity
+    }
+
+    @Override
+    public int getFanGain() {
+        return fanGain;
+    }
+
+    @Override
+    public double getMoneyEarned() {
+        return moneyEarned;
+    }
+}
+
+abstract class Song {
+    private String title;
+    private String style;
+
+    public Song(String title, String style) {
+        this.title = title;
+        this.style = style;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public abstract int calculatePopularity();
+}
+
+class StandardSong extends Song {
+    private int quality;
+
+    public StandardSong(String title, String style, int quality) {
+        super(title, style);
+        this.quality = quality;
+    }
+
+    @Override
+    public int calculatePopularity() {
+        return quality * 10;
+    }
+}
+
+class ViralSong extends Song {
+    private int quality;
+
+    public ViralSong(String title, String style, int quality) {
+        super(title, style);
+        this.quality = quality;
+    }
+
+    @Override
+    public int calculatePopularity() {
+        return quality * 20;
+    }
+}
 
 class Statistics {
     private static int totalArtists = 0;
@@ -23,7 +111,6 @@ class Statistics {
     }
 }
 
-
 abstract class Artist {
     private String name;
     private int fanBase;
@@ -36,7 +123,7 @@ abstract class Artist {
         Statistics.incrementArtistCount();
     }
 
-    public abstract void performConcert(Concert concert);
+    public abstract void performConcert(ConcertType concert);
 
     public void releaseSong(Song song) {
         int popularity = song.calculatePopularity();
@@ -71,26 +158,6 @@ abstract class Artist {
     }
 }
 
-
-class Concert {
-    private int fanGain;
-    private double moneyEarned;
-
-    public Concert(int fanGain, double moneyEarned) {
-        this.fanGain = fanGain;
-        this.moneyEarned = moneyEarned;
-    }
-
-    public int getFanGain() {
-        return fanGain;
-    }
-
-    public double getMoneyEarned() {
-        return moneyEarned;
-    }
-}
-
-
 class Singer extends Artist {
     private String genre;
 
@@ -100,7 +167,7 @@ class Singer extends Artist {
     }
 
     @Override
-    public void performConcert(Concert concert) {
+    public void performConcert(ConcertType concert) {
         setFanBase(getFanBase() + concert.getFanGain());
         setMoney(getMoney() + concert.getMoneyEarned());
         Statistics.updateArtistStats(concert.getFanGain(), concert.getMoneyEarned());
@@ -115,28 +182,6 @@ class Singer extends Artist {
         this.genre = genre;
     }
 }
-
-
-class Song {
-    private String title;
-    private String style;
-    private int quality;
-
-    public Song(String title, String style, int quality) {
-        this.title = title;
-        this.style = style;
-        this.quality = quality;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public int calculatePopularity() {
-        return quality * 10;
-    }
-}
-
 
 class Main {
     public static void main(String[] args) {
@@ -183,11 +228,17 @@ class Main {
                 int songQuality = scanner.nextInt();
                 scanner.nextLine();
 
-                Song song = new Song(songTitle, songStyle, songQuality);
+                Song song = i % 2 == 0
+                        ? new StandardSong(songTitle, songStyle, songQuality)
+                        : new ViralSong(songTitle, songStyle, songQuality);
+
                 artists[j].releaseSong(song);
             }
 
-            Concert concert = new Concert(100, 2000);
+            ConcertType concert = j % 2 == 0
+                    ? new StandardConcert(100, 2000)
+                    : new CharityConcert(150, 1500);
+
             artists[j].performConcert(concert);
 
             System.out.println("\nFinal Artist Details:");
