@@ -1,48 +1,55 @@
 import java.util.Scanner;
 
 
-abstract class Artist {
-    private String name;
-    private int fanBase;
-    private double money;
-
+class Statistics {
     private static int totalArtists = 0;
     private static double totalMoneyEarned = 0;
     private static int totalFans = 0;
 
-    
-    public Artist(String name, int fanBase, double money) {
-        this.name = name;
-        this.fanBase = fanBase;
-        this.money = money;
-        totalArtists++;
+    public static void updateArtistStats(int fans, double money) {
+        totalFans += fans;
         totalMoneyEarned += money;
-        totalFans += fanBase;
     }
 
-  
-    public abstract void performConcert();
-
-
-    public void releaseSongs(Song song) {
-        int popularity = song.calculatePopularity();
-        int fansGained = popularity * 10;
-        fanBase += fansGained;
-        money += popularity * 50;
-        totalMoneyEarned += popularity * 50;
-        totalFans += fansGained;
-        System.out.println(name + " released '" + song.getTitle() + "' and gained " + fansGained + " fans!");
+    public static void incrementArtistCount() {
+        totalArtists++;
     }
 
-    
     public static void displayTotalStats() {
         System.out.println("\n--- Total Stats ---");
         System.out.println("Total Artists: " + totalArtists);
         System.out.println("Total Money Earned by All Artists: $" + totalMoneyEarned);
         System.out.println("Total Fans Gained by All Artists: " + totalFans);
     }
+}
 
-    
+
+abstract class Artist {
+    private String name;
+    private int fanBase;
+    private double money;
+
+    public Artist(String name, int fanBase, double money) {
+        this.name = name;
+        this.fanBase = fanBase;
+        this.money = money;
+        Statistics.incrementArtistCount();
+    }
+
+    public abstract void performConcert(Concert concert);
+
+    public void releaseSong(Song song) {
+        int popularity = song.calculatePopularity();
+        int fansGained = popularity * 10;
+        double moneyEarned = popularity * 50;
+
+        fanBase += fansGained;
+        money += moneyEarned;
+
+        Statistics.updateArtistStats(fansGained, moneyEarned);
+        System.out.println(name + " released '" + song.getTitle() + "' and gained " + fansGained + " fans!");
+    }
+
     public String getName() {
         return name;
     }
@@ -65,6 +72,25 @@ abstract class Artist {
 }
 
 
+class Concert {
+    private int fanGain;
+    private double moneyEarned;
+
+    public Concert(int fanGain, double moneyEarned) {
+        this.fanGain = fanGain;
+        this.moneyEarned = moneyEarned;
+    }
+
+    public int getFanGain() {
+        return fanGain;
+    }
+
+    public double getMoneyEarned() {
+        return moneyEarned;
+    }
+}
+
+
 class Singer extends Artist {
     private String genre;
 
@@ -74,11 +100,11 @@ class Singer extends Artist {
     }
 
     @Override
-    public void performConcert() {
-        int concertFans = 100;
-        setFanBase(getFanBase() + concertFans);
-        setMoney(getMoney() + 2000);
-        System.out.println(getName() + " performed at a concert and gained " + concertFans + " fans!");
+    public void performConcert(Concert concert) {
+        setFanBase(getFanBase() + concert.getFanGain());
+        setMoney(getMoney() + concert.getMoneyEarned());
+        Statistics.updateArtistStats(concert.getFanGain(), concert.getMoneyEarned());
+        System.out.println(getName() + " performed a concert and gained " + concert.getFanGain() + " fans!");
     }
 
     public String getGenre() {
@@ -138,14 +164,11 @@ class Main {
             System.out.print("Enter genre: ");
             String genre = scanner.nextLine();
 
-            
             artists[j] = new Singer(artistName, initialFanBase, initialMoney, genre);
 
             System.out.print("Enter the number of songs: ");
             int numberOfSongs = scanner.nextInt();
             scanner.nextLine();
-
-            Song[] songs = new Song[numberOfSongs];
 
             for (int i = 0; i < numberOfSongs; i++) {
                 System.out.println("Enter details for song " + (i + 1) + ":");
@@ -160,27 +183,18 @@ class Main {
                 int songQuality = scanner.nextInt();
                 scanner.nextLine();
 
-                songs[i] = new Song(songTitle, songStyle, songQuality);
+                Song song = new Song(songTitle, songStyle, songQuality);
+                artists[j].releaseSong(song);
             }
 
-            System.out.println("\nInitial Artist Details:");
-            System.out.println("Name: " + artists[j].getName() + ", Fan Base: " + artists[j].getFanBase() + ", Money: $" + artists[j].getMoney());
-
-           
-            for (Song song : songs) {
-                artists[j].releaseSongs(song);
-            }
-
-           
-            artists[j].performConcert();
+            Concert concert = new Concert(100, 2000);
+            artists[j].performConcert(concert);
 
             System.out.println("\nFinal Artist Details:");
             System.out.println("Name: " + artists[j].getName() + ", Fan Base: " + artists[j].getFanBase() + ", Money: $" + artists[j].getMoney());
         }
 
-      
-        Artist.displayTotalStats();
-
+        Statistics.displayTotalStats();
         scanner.close();
     }
 }
