@@ -1,28 +1,50 @@
 import java.util.Scanner;
 
+// Interface for different types of concerts
+interface ConcertType {
+    int getFanGain();
+    double getMoneyEarned();
+}
 
-class Statistics {
-    private static int totalArtists = 0;
-    private static double totalMoneyEarned = 0;
-    private static int totalFans = 0;
+class StandardConcert implements ConcertType {
+    private int fanGain;
+    private double moneyEarned;
 
-    public static void updateArtistStats(int fans, double money) {
-        totalFans += fans;
-        totalMoneyEarned += money;
+    public StandardConcert(int fanGain, double moneyEarned) {
+        this.fanGain = fanGain;
+        this.moneyEarned = moneyEarned;
     }
 
-    public static void incrementArtistCount() {
-        totalArtists++;
+    @Override
+    public int getFanGain() {
+        return fanGain;
     }
 
-    public static void displayTotalStats() {
-        System.out.println("\n--- Total Stats ---");
-        System.out.println("Total Artists: " + totalArtists);
-        System.out.println("Total Money Earned by All Artists: $" + totalMoneyEarned);
-        System.out.println("Total Fans Gained by All Artists: " + totalFans);
+    @Override
+    public double getMoneyEarned() {
+        return moneyEarned;
     }
 }
 
+class CharityConcert implements ConcertType {
+    private int fanGain;
+    private double moneyEarned;
+
+    public CharityConcert(int fanGain, double moneyEarned) {
+        this.fanGain = fanGain;
+        this.moneyEarned = moneyEarned * 0.5; // Less earnings in charity concerts
+    }
+
+    @Override
+    public int getFanGain() {
+        return fanGain;
+    }
+
+    @Override
+    public double getMoneyEarned() {
+        return moneyEarned;
+    }
+}
 
 abstract class Artist {
     private String name;
@@ -36,7 +58,7 @@ abstract class Artist {
         Statistics.incrementArtistCount();
     }
 
-    public abstract void performConcert(Concert concert);
+    public abstract void performConcert(ConcertType concert);
 
     public void releaseSong(Song song) {
         int popularity = song.calculatePopularity();
@@ -71,26 +93,6 @@ abstract class Artist {
     }
 }
 
-
-class Concert {
-    private int fanGain;
-    private double moneyEarned;
-
-    public Concert(int fanGain, double moneyEarned) {
-        this.fanGain = fanGain;
-        this.moneyEarned = moneyEarned;
-    }
-
-    public int getFanGain() {
-        return fanGain;
-    }
-
-    public double getMoneyEarned() {
-        return moneyEarned;
-    }
-}
-
-
 class Singer extends Artist {
     private String genre;
 
@@ -100,7 +102,7 @@ class Singer extends Artist {
     }
 
     @Override
-    public void performConcert(Concert concert) {
+    public void performConcert(ConcertType concert) {
         setFanBase(getFanBase() + concert.getFanGain());
         setMoney(getMoney() + concert.getMoneyEarned());
         Statistics.updateArtistStats(concert.getFanGain(), concert.getMoneyEarned());
@@ -116,27 +118,71 @@ class Singer extends Artist {
     }
 }
 
-
-class Song {
+abstract class Song {
     private String title;
     private String style;
-    private int quality;
 
-    public Song(String title, String style, int quality) {
+    public Song(String title, String style) {
         this.title = title;
         this.style = style;
-        this.quality = quality;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public abstract int calculatePopularity();
+}
+
+class StandardSong extends Song {
+    private int quality;
+
+    public StandardSong(String title, String style, int quality) {
+        super(title, style);
+        this.quality = quality;
+    }
+
+    @Override
     public int calculatePopularity() {
         return quality * 10;
     }
 }
 
+class ViralSong extends Song {
+    private int quality;
+
+    public ViralSong(String title, String style, int quality) {
+        super(title, style);
+        this.quality = quality;
+    }
+`
+    @Override
+    public int calculatePopularity() {
+        return quality * 20; // Higher popularity multiplier
+    }
+}
+
+class Statistics {
+    private static int totalArtists = 0;
+    private static double totalMoneyEarned = 0;
+    private static int totalFans = 0;
+
+    public static void updateArtistStats(int fans, double money) {
+        totalFans += fans;
+        totalMoneyEarned += money;
+    }
+
+    public static void incrementArtistCount() {
+        totalArtists++;
+    }
+
+    public static void displayTotalStats() {
+        System.out.println("\n--- Total Stats ---");
+        System.out.println("Total Artists: " + totalArtists);
+        System.out.println("Total Money Earned by All Artists: $" + totalMoneyEarned);
+        System.out.println("Total Fans Gained by All Artists: " + totalFans);
+    }
+}
 
 class Main {
     public static void main(String[] args) {
@@ -183,11 +229,17 @@ class Main {
                 int songQuality = scanner.nextInt();
                 scanner.nextLine();
 
-                Song song = new Song(songTitle, songStyle, songQuality);
+                Song song = i % 2 == 0
+                        ? new StandardSong(songTitle, songStyle, songQuality)
+                        : new ViralSong(songTitle, songStyle, songQuality);
+
                 artists[j].releaseSong(song);
             }
 
-            Concert concert = new Concert(100, 2000);
+            ConcertType concert = j % 2 == 0
+                    ? new StandardConcert(100, 2000)
+                    : new CharityConcert(150, 1500);
+
             artists[j].performConcert(concert);
 
             System.out.println("\nFinal Artist Details:");
