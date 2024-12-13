@@ -32,7 +32,7 @@ class CharityConcert implements ConcertType {
 
     public CharityConcert(int fanGain, double moneyEarned) {
         this.fanGain = fanGain;
-        this.moneyEarned = moneyEarned * 0.5; // Less earnings in charity concerts
+        this.moneyEarned = moneyEarned * 0.5; // Adjusted earnings for charity
     }
 
     @Override
@@ -43,6 +43,50 @@ class CharityConcert implements ConcertType {
     @Override
     public double getMoneyEarned() {
         return moneyEarned;
+    }
+}
+
+abstract class Song {
+    private String title;
+    private String style;
+
+    public Song(String title, String style) {
+        this.title = title;
+        this.style = style;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public abstract int calculatePopularity();
+}
+
+class StandardSong extends Song {
+    private int quality;
+
+    public StandardSong(String title, String style, int quality) {
+        super(title, style);
+        this.quality = quality;
+    }
+
+    @Override
+    public int calculatePopularity() {
+        return quality * 10;
+    }
+}
+
+class ViralSong extends Song {
+    private int quality;
+
+    public ViralSong(String title, String style, int quality) {
+        super(title, style);
+        this.quality = quality;
+    }
+
+    @Override
+    public int calculatePopularity() {
+        return quality * 20; // Higher popularity multiplier
     }
 }
 
@@ -115,50 +159,6 @@ class Singer extends Artist {
 
     public void setGenre(String genre) {
         this.genre = genre;
-    }
-}
-
-abstract class Song {
-    private String title;
-    private String style;
-
-    public Song(String title, String style) {
-        this.title = title;
-        this.style = style;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public abstract int calculatePopularity();
-}
-
-class StandardSong extends Song {
-    private int quality;
-
-    public StandardSong(String title, String style, int quality) {
-        super(title, style);
-        this.quality = quality;
-    }
-
-    @Override
-    public int calculatePopularity() {
-        return quality * 10;
-    }
-}
-
-class ViralSong extends Song {
-    private int quality;
-
-    public ViralSong(String title, String style, int quality) {
-        super(title, style);
-        this.quality = quality;
-    }
-`
-    @Override
-    public int calculatePopularity() {
-        return quality * 20; // Higher popularity multiplier
     }
 }
 
